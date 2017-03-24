@@ -5,6 +5,10 @@ Navio
 
 Collection of drivers and examples for Navio - autopilot shield for Raspberry Pi.
 
+### GTER ANNOTATION:
+We add a python script to send data to a server using a socket 
+The script is in the Python folder and it is called IMU_socket.py
+
 ## Repository structure
 
 ### C++
