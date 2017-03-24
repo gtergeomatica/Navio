@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # Copyleft Gter srl 2017
-# roberto.marzocchi@gter.it
+# author: roberto.marzocchi@gter.it
+# this file is useful to send IMU's data to the control center server (TCP_IP address)
+# the user need to change this file and run it. It send data with the desired frequency
+
 
 import spidev
 import time
@@ -8,12 +11,14 @@ import sys
 import navio.util
 from navio.mpu9250 import MPU9250
 
+#library added by GTER
 import socket
 #import time
 from datetime import datetime, date
 
 
 #socket data
+#TCP_IP is the address of the control center server (TBM)
 TCP_IP = '192.168.2.126'
 TCP_PORT = 8081
 BUFFER_SIZE = 1024
@@ -21,7 +26,7 @@ check_connection=0
 
 
 
-#Gestione dati IMU 
+# IMU data management
 navio.util.check_apm()
 
 imu = MPU9250()
@@ -49,13 +54,12 @@ while True:
     # print "Magnetometer:  ", imu.magnetometer_data
 
     # time.sleep(0.1)
-
     m9a, m9g, m9m = imu.getMotion9()
     # calcolo ora UTC nello stesso formato dell'output di RTKLIB
     dt=datetime.utcnow()
     # Formatting datetime
-    ora=dt.strftime("%Y/%m/%d|%H:%M:%S.%f")
-    MESSAGE = "IMU|%s|%0.3f|%0.3f|%0.3f" % (ora, m9a[0], m9a[1], m9a[2])
+    day_time=dt.strftime("%Y/%m/%d|%H:%M:%S.%f")
+    MESSAGE = "IMU|%s|%0.3f|%0.3f|%0.3f" % (day_time, m9a[0], m9a[1], m9a[2])
     print MESSAGE
 
     #print "Acc:", "{:+7.3f}".format(m9a[0]), "{:+7.3f}".format(m9a[1]), "{:+7.3f}".format(m9a[2]),
@@ -73,8 +77,11 @@ while True:
         check_connection=1
         print "received data:", data
     except:
-        print "Connessione socket non riuscita"
+        print "Socket connection failed!"
         check_connection=0
+    
+    
+    # this is the frequency of the msg in seconds 
     time.sleep(0.5)
 
 
